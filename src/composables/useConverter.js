@@ -5,9 +5,16 @@ import {
   WEIGHT_UNITS,
   WEIGHT_TO_KG,
   TEMPERATURE_UNITS,
-  CURRENCY_UNITS
+  CURRENCY_UNITS,
+  CURRENCY_TO_USD
 } from '../constants/units.js'
 import { roundTo } from '../utils/format.js'
+
+function isValidNumber(value) {
+  if (value === '' || value === null || value === undefined) return false
+  const num = parseFloat(value)
+  return !isNaN(num) && isFinite(num)
+}
 
 function getUnits(categoryId) {
   switch (categoryId) {
@@ -24,19 +31,19 @@ function getUnits(categoryId) {
   }
 }
 
-function convertByBase(value, fromUnit, toUnit, rates) {
-  if (value === '' || value === null || isNaN(value)) return ''
+function convertByBase(value, fromUnit, toUnit, rates, precision = 6) {
+  if (!isValidNumber(value)) return ''
   const num = parseFloat(value)
-  if (fromUnit === toUnit) return roundTo(num, 6)
+  if (fromUnit === toUnit) return roundTo(num, precision)
   const baseValue = num * rates[fromUnit]
   const result = baseValue / rates[toUnit]
-  return roundTo(result, 6)
+  return roundTo(result, precision)
 }
 
 function convertTemperature(value, fromUnit, toUnit) {
-  if (value === '' || value === null || isNaN(value)) return ''
+  if (!isValidNumber(value)) return ''
   const num = parseFloat(value)
-  if (fromUnit === toUnit) return roundTo(num, 6)
+  if (fromUnit === toUnit) return roundTo(num, 4)
 
   let celsius
   switch (fromUnit) {
@@ -68,18 +75,19 @@ function convertTemperature(value, fromUnit, toUnit) {
       result = celsius
   }
 
-  return roundTo(result, 6)
+  return roundTo(result, 4)
 }
 
 function convertWeight(value, fromUnit, toUnit) {
-  return convertByBase(value, fromUnit, toUnit, WEIGHT_TO_KG)
+  return convertByBase(value, fromUnit, toUnit, WEIGHT_TO_KG, 6)
+}
+
+function convertLength(value, fromUnit, toUnit) {
+  return convertByBase(value, fromUnit, toUnit, LENGTH_TO_METER, 6)
 }
 
 function convertCurrency(value, fromUnit, toUnit) {
-  if (value === '' || value === null || isNaN(value)) return ''
-  const num = parseFloat(value)
-  if (fromUnit === toUnit) return roundTo(num, 6)
-  return num
+  return convertByBase(value, fromUnit, toUnit, CURRENCY_TO_USD, 4)
 }
 
 export function useConverter(categoryId) {
@@ -93,7 +101,7 @@ export function useConverter(categoryId) {
   function convert(value, from, to) {
     switch (categoryId) {
       case 'length':
-        return convertByBase(value, from, to, LENGTH_TO_METER)
+        return convertLength(value, from, to)
       case 'weight':
         return convertWeight(value, from, to)
       case 'temperature':

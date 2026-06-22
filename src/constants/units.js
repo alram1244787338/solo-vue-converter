@@ -32,6 +32,7 @@ export const WEIGHT_UNITS = [
   { id: 'g', name: '克', symbol: 'g' },
   { id: 'mg', name: '毫克', symbol: 'mg' },
   { id: 't', name: '吨', symbol: 't' },
+  { id: 'jin', name: '斤', symbol: '斤' },
   { id: 'lb', name: '磅', symbol: 'lb' },
   { id: 'oz', name: '盎司', symbol: 'oz' }
 ]
@@ -41,6 +42,7 @@ export const WEIGHT_TO_KG = {
   g: 0.001,
   mg: 0.000001,
   t: 1000,
+  jin: 0.5,
   lb: 0.45359237,
   oz: 0.02834952
 }
@@ -59,3 +61,12 @@ export const CURRENCY_UNITS = [
   { id: 'gbp', name: '英镑', symbol: '£' },
   { id: 'hkd', name: '港币', symbol: 'HK$' }
 ]
+
+export const CURRENCY_TO_USD = {
+  cny: 0.138,
+  usd: 1,
+  eur: 1.08,
+  jpy: 0.0065,
+  gbp: 1.27,
+  hkd: 0.128
+}
