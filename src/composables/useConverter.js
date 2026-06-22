@@ -10,28 +10,13 @@ import {
 } from '../constants/units.js'
 import { roundTo } from '../utils/format.js'
 
-function isValidNumber(value) {
+export function isValidNumber(value) {
   if (value === '' || value === null || value === undefined) return false
   const num = parseFloat(value)
   return !isNaN(num) && isFinite(num)
 }
 
-function getUnits(categoryId) {
-  switch (categoryId) {
-    case 'length':
-      return LENGTH_UNITS
-    case 'weight':
-      return WEIGHT_UNITS
-    case 'temperature':
-      return TEMPERATURE_UNITS
-    case 'currency':
-      return CURRENCY_UNITS
-    default:
-      return []
-  }
-}
-
-function convertByBase(value, fromUnit, toUnit, rates, precision = 6) {
+export function convertByBase(value, fromUnit, toUnit, rates, precision = 6) {
   if (!isValidNumber(value)) return ''
   const num = parseFloat(value)
   if (fromUnit === toUnit) return roundTo(num, precision)
@@ -40,7 +25,7 @@ function convertByBase(value, fromUnit, toUnit, rates, precision = 6) {
   return roundTo(result, precision)
 }
 
-function convertTemperature(value, fromUnit, toUnit) {
+export function convertTemperature(value, fromUnit, toUnit) {
   if (!isValidNumber(value)) return ''
   const num = parseFloat(value)
   if (fromUnit === toUnit) return roundTo(num, 4)
@@ -88,6 +73,21 @@ function convertLength(value, fromUnit, toUnit) {
 
 function convertCurrency(value, fromUnit, toUnit) {
   return convertByBase(value, fromUnit, toUnit, CURRENCY_TO_USD, 4)
+}
+
+function getUnits(categoryId) {
+  switch (categoryId) {
+    case 'length':
+      return LENGTH_UNITS
+    case 'weight':
+      return WEIGHT_UNITS
+    case 'temperature':
+      return TEMPERATURE_UNITS
+    case 'currency':
+      return CURRENCY_UNITS
+    default:
+      return []
+  }
 }
 
 export function useConverter(categoryId) {
